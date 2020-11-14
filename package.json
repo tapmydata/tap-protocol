@@ -1,0 +1,25 @@
+{
+  "name": "tap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^3.2.0",
+    "@openzeppelin/test-helpers": "^0.5.9",
+    "@truffle/hdwallet-provider": "^1.1.1",
+    "chai": "^4.2.0",
+    "ganache-cli": "^6.12.1",
+    "truffle": "^5.1.51",
+    "truffle-assertions": "^0.9.2",
+    "truffle-plugin-verify": "^0.5.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
