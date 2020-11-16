@@ -28,9 +28,6 @@ jobs:
       - name: NPM install
         run: npm install
 
-      # Runs a set of commands using the runners shell
-      - name: Run ganache
-        run: npx ganache-cli
-      
+      # Runs tests 
       - name: Run tests
         run: npx truffle test
