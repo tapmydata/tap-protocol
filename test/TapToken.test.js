@@ -39,7 +39,7 @@ contract('Tap', function ([ owner, other ]) {
   it('can be paused', async function () {
     await this.tap.transfer(other, 1000);
     expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
-    
+
     // Pause the contract
     const web3Receipt = await this.tap.pause();
     await expectEvent(
