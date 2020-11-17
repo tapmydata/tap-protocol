@@ -89,4 +89,28 @@ contract('Tap', function ([ owner, other ]) {
     );
   });
 
+  it('can only be snapshot by owner', async function () {
+    await expectRevert(
+      this.tap.snapshot({from: other}),
+      "Ownable: caller is not the owner"
+    );
+  });
+
+  it('can be snapshot', async function () {
+    await this.tap.transfer(other, 1000);
+    expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
+
+    await this.tap.snapshot();
+
+    //Get snapshot value from event
+    var snapshot_id = 0;
+    await this.tap.getPastEvents('Snapshot').then(function(events){
+      snapshot_id = events[0].args.id; // same results as the optional callback above
+    });
+    
+    await this.tap.transfer(other, 1000);
+    expect((await this.tap.balanceOf(other)).toString()).to.equal("2000");
+    expect((await this.tap.balanceOfAt(other, snapshot_id)).toString()).to.equal("1000");
+  });
+
 });
