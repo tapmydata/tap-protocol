@@ -14,13 +14,16 @@ const VestingVault = artifacts.require('VestingVault');
 contract('VestingVault', function ([ owner, other ]) {
 
   const initialSupply = new BN('1000');
+  const cap = new BN('1000');
   const unixTime = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
     snapShot = await helper.takeSnapshot();
     snapshotId = snapShot['result'];
 
-    this.tap = await Tap.new(initialSupply);
+    this.tap = await Tap.new('Tapmydata', 'TAP', cap);
+    await this.tap.mint(owner, initialSupply);
+
     this.vault = await VestingVault.new(this.tap.address)
     await this.tap.approve(this.vault.address, 1000);
   });
