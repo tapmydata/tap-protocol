@@ -1,10 +1,10 @@
 pragma solidity ^0.6.0;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Pausable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Snapshot.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TapToken is ERC20Pausable, ERC20Snapshot, Ownable {
+contract TapToken is ERC20Pausable, Ownable {
     constructor(uint256 initialSupply) public ERC20("Tapmydata", "TAP") {
         _mint(msg.sender, initialSupply);
     }
@@ -22,10 +22,6 @@ contract TapToken is ERC20Pausable, ERC20Snapshot, Ownable {
         _pause();
     }
 
-    function snapshot() public onlyOwner returns (uint256) {
-        return _snapshot();
-    }
-
     /**
      * @dev Unpauses all token transfers.
      *
@@ -37,9 +33,5 @@ contract TapToken is ERC20Pausable, ERC20Snapshot, Ownable {
      */
     function unpause() public onlyOwner {
         _unpause();
-    }
-
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override(ERC20Pausable, ERC20Snapshot) {
-        super._beforeTokenTransfer(from, to, amount);
     }
 }
