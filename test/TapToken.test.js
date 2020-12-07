@@ -7,13 +7,17 @@ const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 // Load compiled artifacts
 const Tap = artifacts.require('TapToken');
 
+const Web3 = require('web3');
+
 // Start test block
 contract('Tap', function ([ owner, other ]) {
 
-  const initialSupply = new BN('100000000');
+  const cap = new BN('100000000');
+  const initialSupply = new BN('50000000');
 
   beforeEach(async function () {
-    this.tap = await Tap.new(initialSupply);
+    this.tap = await Tap.new('Tapmydata', 'TAP', cap);
+    await this.tap.mint(owner, initialSupply);
   });
 
   it('has correct initial supply', async function () {
@@ -21,12 +25,28 @@ contract('Tap', function ([ owner, other ]) {
     expect((await this.tap.totalSupply()).toString()).to.equal(initialSupply.toString());
   });
 
-  it('has transferred intial supply to owner', async function () {
+  it('can mint more tokens', async function () {
     // Store a value
-    expect((await this.tap.balanceOf(owner)).toString()).to.equal(initialSupply.toString());
+    await this.tap.mint(owner, initialSupply);
+    expect((await this.tap.totalSupply()).toString()).to.equal(cap.toString());
   });
 
-  it('has correct namne', async function () {
+  it('can not mint beyond cap', async function () {
+    // Store a value
+    await expectRevert(
+      this.tap.mint(owner, cap),
+      "ERC20Capped: cap exceeded"
+    );
+  });
+
+  it('can burn tokens', async function () {
+    const toBurn = new BN('20000000');
+    const newSupply = new BN('30000000');
+    await this.tap.burn(toBurn);
+    expect((await this.tap.totalSupply()).toString()).to.equal(newSupply.toString());
+  });
+
+  it('has correct name', async function () {
     // Store a value
     expect(await this.tap.name()).to.equal('Tapmydata');
   });
@@ -34,6 +54,71 @@ contract('Tap', function ([ owner, other ]) {
   it('has correct symbol', async function () {
     // Store a value
     expect(await this.tap.symbol()).to.equal('TAP');
+  });
+
+  it('can transfer tokens', async function() {
+    await this.tap.transfer(other, 1000);
+    expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
+  });
+
+  it('can block transfer to recipient', async function() {
+    const web3Receipt = await this.tap.blockAccount(other);
+
+    await expectEvent(
+      web3Receipt,
+      "Blocked",
+      [ other ]
+    );
+
+    await expectRevert(
+      this.tap.transfer(other, 1000),
+      "ERC20Blockable: token transfer rejected. Receiver is blocked."
+    );
+    expect((await this.tap.balanceOf(other)).toString()).to.equal("0");
+  });
+
+  it('can block transfer from sender', async function() {
+    await this.tap.transfer(other, 1000);
+    newBalance = await this.tap.balanceOf(owner);
+    await this.tap.blockAccount(other);
+    await expectRevert(
+      this.tap.transfer(owner, 1000, {from: other}),
+      "ERC20Blockable: token transfer rejected. Sender is blocked."
+    );
+    expect((await this.tap.balanceOf(owner)).toString()).to.equal(newBalance.toString());
+  });
+
+  it('can unblock account', async function() {
+    await this.tap.blockAccount(other);
+    const web3Receipt = await this.tap.unBlockAccount(other);
+    await expectEvent(
+      web3Receipt,
+      "UnBlocked",
+      [ other ]
+    );
+
+    await this.tap.transfer(other, 1000);
+    expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
+  });
+  
+  it('can only be blocked by blocker role account', async function() {
+    await expectRevert(
+      this.tap.blockAccount(owner, {from: other}),
+      "ERC20Blockable: must have blocker role to block."
+    );
+  });
+
+  it('can assign blocker role', async function() {
+    const role = Web3.utils.keccak256("BLOCKER_ROLE");
+    const web3Receipt = await this.tap.grantRole(role, other);
+    await expectEvent(
+      web3Receipt,
+      "RoleGranted",
+      [ role, other, owner ]
+    );
+    const account_to_block = '0xcb0510D1c4eA88CcD1F2395D075Af9e831C2F15d';
+    await this.tap.blockAccount(account_to_block, {from: other});
+    expect(await this.tap.isBlocked(account_to_block)).to.equal(true);
   });
 
   it('can be paused', async function () {
@@ -56,10 +141,10 @@ contract('Tap', function ([ owner, other ]) {
     expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
   });
 
-  it('can only be paused by owner', async function () {
+  it('can only be paused by pauser role', async function () {
     await expectRevert(
       this.tap.pause({from: other}),
-      "Ownable: caller is not the owner"
+      "ERC20PresetMinterPauser: must have pauser role to pause"
     );
   });
 
@@ -82,10 +167,10 @@ contract('Tap', function ([ owner, other ]) {
     expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
   });
 
-  it('can only be un-paused by owner', async function () {
+  it('can only be un-paused by pauser role', async function () {
     await expectRevert(
       this.tap.unpause({from: other}),
-      "Ownable: caller is not the owner"
+      "ERC20PresetMinterPauser: must have pauser role to unpause"
     );
   });
 

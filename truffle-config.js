@@ -62,6 +62,14 @@ module.exports = {
       from: process.env.FROM,
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
+    kovan: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      network_id: 42,       // Kovan's id
+      gas: 5000000,
+      gasPrice: 25000000000,
+      from: process.env.FROM,
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),

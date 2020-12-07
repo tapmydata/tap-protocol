@@ -1,37 +1,13 @@
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Pausable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./ERC20Blockable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
+import "@openzeppelin/contracts/presets/ERC20PresetMinterPauser.sol";
 
-contract TapToken is ERC20Pausable, Ownable {
-    constructor(uint256 initialSupply) public ERC20("Tapmydata", "TAP") {
-        _mint(msg.sender, initialSupply);
-    }
+contract TapToken is ERC20PresetMinterPauser, ERC20Capped, ERC20Blockable {
+    constructor (string memory name, string memory symbol, uint256 cap) public ERC20PresetMinterPauser(name, symbol) ERC20Capped(cap) {}
 
-    /**
-     * @dev Pauses all token transfers.
-     *
-     * See {ERC20Pausable} and {Pausable-_pause}.
-     *
-     * Requirements:
-     *
-     * - the caller must be contract owner
-     */
-    function pause() public onlyOwner {
-        _pause();
-    }
-
-    /**
-     * @dev Unpauses all token transfers.
-     *
-     * See {ERC20Pausable} and {Pausable-_unpause}.
-     *
-     * Requirements:
-     *
-     * - the caller must be contract owner
-     */
-    function unpause() public onlyOwner {
-        _unpause();
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override(ERC20PresetMinterPauser, ERC20Capped, ERC20Blockable) {
+        super._beforeTokenTransfer(from, to, amount);
     }
 }
