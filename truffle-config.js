@@ -70,6 +70,12 @@ module.exports = {
       from: process.env.FROM,
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
+    mainnet: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      gas: 5000000,
+      gasPrice: 5e9,
+      network_id: 1
+    }
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
