@@ -56,14 +56,14 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     rinkeby: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_RINKEBY),
       network_id: 4,       // Ropsten's id
       gasPrice: 10e9,        // Ropsten has a lower block limit than mainnet
       from: process.env.FROM,
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     kovan: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_KOVAN),
       network_id: 42,       // Kovan's id
       gas: 5000000,
       gasPrice: 25000000000,
@@ -71,9 +71,9 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     mainnet: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
-      gas: 5000000,
-      gasPrice: 5e9,
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_MAINNET),
+      gasPrice: 100000000000,
+      from: process.env.FROM,
       network_id: 1
     }
     // Useful for private networks

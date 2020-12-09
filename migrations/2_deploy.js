@@ -8,7 +8,7 @@ const one_hundred_million = Web3.utils.toWei('100000000', 'ether');
 module.exports = async function (deployer, network, accounts) {
   await deployer.deploy(TapToken, 'Tapmydata', 'TAP', one_hundred_million);
   tapInstance = await TapToken.deployed();
-  if(process.env.FROM) {
-    await tapInstance.mint(process.env.FROM, one_hundred_million);
+  if(process.env.MINT_TO) {
+    await tapInstance.mint(process.env.MINT_TO, one_hundred_million);
   }
 };
