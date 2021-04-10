@@ -2,7 +2,7 @@
 Original work taken from https://gist.github.com/rstormsf/7cfb0c6b7a835c0c67b4a394b4fd9383
 Has been amended to use openzepplin Ownable and now only supports one grant per address for simplicity.
 */
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.16;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";

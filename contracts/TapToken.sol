@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.16;
 
 import "./ERC20Blockable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
