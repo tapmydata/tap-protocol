@@ -63,7 +63,7 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     kovan: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_KOVAN),
       network_id: 42,       // Kovan's id
       gas: 5000000,
       gasPrice: 25000000000,
@@ -75,7 +75,15 @@ module.exports = {
       gas: 5000000,
       gasPrice: 5e9,
       network_id: 1
-    }
+    },
+    matic: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, 'https://rpc-mumbai.matic.today'),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      from: process.env.FROM,
+      skipDryRun: true
+    },
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
