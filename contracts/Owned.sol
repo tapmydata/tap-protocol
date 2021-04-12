@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.16;
 
 
 // https://docs.synthetix.io/contracts/source/contracts/owned

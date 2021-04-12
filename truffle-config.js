@@ -56,7 +56,7 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     rinkeby: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_RINKEBY),
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
       network_id: 4,       // Ropsten's id
       gasPrice: 10e9,        // Ropsten has a lower block limit than mainnet
       from: process.env.FROM,
@@ -71,9 +71,9 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     mainnet: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_MAINNET),
-      gasPrice: 100000000000,
-      from: process.env.FROM,
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA),
+      gas: 5000000,
+      gasPrice: 5e9,
       network_id: 1
     }
     // Useful for private networks
@@ -100,7 +100,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: ">=0.5.16",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "^0.5.16",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
