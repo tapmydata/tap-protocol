@@ -36,14 +36,13 @@ contract StakingRewardsFactory is Ownable {
 
     // deploy a staking reward contract for the staking token, and store the reward amount
     // the reward will be distributed to the staking reward contract no sooner than the genesis
-    function deploy(address stakingToken, uint rewardAmount) public onlyOwner returns(address) {
+    function deploy(address stakingToken, uint rewardAmount) public onlyOwner {
         StakingRewardsInfo storage info = stakingRewardsInfoByStakingToken[stakingToken];
         require(info.stakingRewards == address(0), 'StakingRewardsFactory::deploy: already deployed');
 
-        info.stakingRewards = address(new StakingRewards(msg.sender, /*_rewardsDistribution=*/ address(this), rewardsToken, stakingToken));
+        info.stakingRewards = address(new StakingRewards(/*_rewardsDistribution=*/ address(this), rewardsToken, stakingToken));
         info.rewardAmount = rewardAmount;
         stakingTokens.push(stakingToken);
-        return info.stakingRewards;
     }
 
     ///// permissionless functions
