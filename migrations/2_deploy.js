@@ -6,7 +6,7 @@ const StakingRewardsFactory = artifacts.require("StakingRewardsFactory");
 
 module.exports = async function (deployer, network, accounts) {
 
-  await deployer.deploy(StakingRewardsFactory, '0x942684bDbd2d4897e766F383795cB94D00a0bCeC', 1619307000);
+  await deployer.deploy(StakingRewardsFactory, '0xac3211a5025414af2866ff09c23fc18bc97e79b1', 1619307000);
 
   //https://github.com/OpenZeppelin/openzeppelin-upgrades/blob/master/packages/plugin-truffle/README.md
 
