@@ -65,10 +65,8 @@ module.exports = {
     kovan: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_KOVAN),
       network_id: 42,       // Kovan's id
-      gas: 5000000,
       gasPrice: 25000000000,
-      from: process.env.FROM,
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      from: process.env.FROM
     },
     mainnet: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_MAINNET),
