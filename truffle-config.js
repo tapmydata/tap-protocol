@@ -33,55 +33,22 @@ module.exports = {
    */
 
   networks: {
-    // Useful for testing. The `development` name is special - truffle uses it by default
-    // if it's defined here and no other network is specified at the command line.
-    // You should run a client (like ganache-cli, geth or parity) in a separate terminal
-    // tab if you use this network and you must also set the `host`, `port` and `network_id`
-    // options below to some value.
-    //
-    /*development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 8545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
-    },*/
-    // Another network with more advanced options...
-    // advanced: {
-    // port: 8777,             // Custom port
-    // network_id: 1342,       // Custom network
-    // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
-    // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-    // from: <address>,        // Account to send txs from (default: accounts[0])
-    // websockets: true        // Enable EventEmitter interface for web3 (default: false)
-    // },
-    // Useful for deploying to a public network.
-    // NB: It's important to wrap the provider as a function.
-    rinkeby: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_RINKEBY),
-      network_id: 4,       // Ropsten's id
-      gasPrice: 10e9,        // Ropsten has a lower block limit than mainnet
-      from: process.env.FROM,
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    testnet: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      from: process.env.FROM
     },
-    kovan: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_KOVAN),
-      network_id: 42,       // Kovan's id
-      gas: 5000000,
-      gasPrice: 25000000000,
-      from: process.env.FROM,
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-    },
-    mainnet: {
-      provider: () => new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_MAINNET),
-      gasPrice: 100000000000,
-      from: process.env.FROM,
-      network_id: 1
+    bsc: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://bsc-dataseed1.binance.org`),
+      network_id: 56,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      from: process.env.FROM
     }
-    // Useful for private networks
-    // private: {
-    // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
-    // network_id: 2111,   // This network is yours, in the cloud.
-    // production: true    // Treats this network as if it was a public net. (default: false)
-    // }
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -94,7 +61,7 @@ module.exports = {
   ],
 
   api_keys: {
-    etherscan: process.env.ETHERSCAN
+    bscscan: process.env.BSC
   },
 
   // Configure your compilers

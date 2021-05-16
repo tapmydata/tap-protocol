@@ -20,22 +20,40 @@ contract('Tap', function ([ owner, other ]) {
     await this.tap.mint(owner, initialSupply);
   });
 
+  it('has correct owner', async function () {
+    expect((await this.tap.getOwner()).toString()).to.equal(owner);
+  });
+
+  it('can have ownership transferred', async function () {
+    await this.tap.transferOwnership(other)
+    expect((await this.tap.getOwner()).toString()).to.equal(other);
+  });
+
+  it('can not have ownership transferred if not called by owner', async function () {
+    await expectRevert(
+      this.tap.transferOwnership(other, {from: other}),
+      "Ownable: caller is not the owner"
+    );
+  });
+
+  it('can renounce ownership', async function () {
+    await this.tap.renounceOwnership();
+    expect((await this.tap.getOwner()).toString()).to.equal('0x0000000000000000000000000000000000000000');
+  });
+
   it('has correct initial supply', async function () {
-    // Store a value
     expect((await this.tap.totalSupply()).toString()).to.equal(initialSupply.toString());
   });
 
   it('can mint more tokens', async function () {
-    // Store a value
     await this.tap.mint(owner, initialSupply);
     expect((await this.tap.totalSupply()).toString()).to.equal(cap.toString());
   });
 
   it('can not mint beyond cap', async function () {
-    // Store a value
     await expectRevert(
       this.tap.mint(owner, cap),
-      "ERC20Capped: cap exceeded"
+      "BEP20Capped: cap exceeded"
     );
   });
 
@@ -47,12 +65,10 @@ contract('Tap', function ([ owner, other ]) {
   });
 
   it('has correct name', async function () {
-    // Store a value
     expect(await this.tap.name()).to.equal('Tapmydata');
   });
 
   it('has correct symbol', async function () {
-    // Store a value
     expect(await this.tap.symbol()).to.equal('TAP');
   });
 
@@ -72,7 +88,7 @@ contract('Tap', function ([ owner, other ]) {
 
     await expectRevert(
       this.tap.transfer(other, 1000),
-      "ERC20Blockable: token transfer rejected. Receiver is blocked."
+      "BEP20Blockable: token transfer rejected. Receiver is blocked."
     );
     expect((await this.tap.balanceOf(other)).toString()).to.equal("0");
   });
@@ -83,7 +99,7 @@ contract('Tap', function ([ owner, other ]) {
     await this.tap.blockAccount(other);
     await expectRevert(
       this.tap.transfer(owner, 1000, {from: other}),
-      "ERC20Blockable: token transfer rejected. Sender is blocked."
+      "BEP20Blockable: token transfer rejected. Sender is blocked."
     );
     expect((await this.tap.balanceOf(owner)).toString()).to.equal(newBalance.toString());
   });
@@ -104,7 +120,7 @@ contract('Tap', function ([ owner, other ]) {
   it('can only be blocked by blocker role account', async function() {
     await expectRevert(
       this.tap.blockAccount(owner, {from: other}),
-      "ERC20Blockable: must have blocker role to block."
+      "BEP20Blockable: must have blocker role to block."
     );
   });
 
@@ -135,7 +151,7 @@ contract('Tap', function ([ owner, other ]) {
 
     await expectRevert(
       this.tap.transfer(other, 1000),
-      "ERC20Pausable: token transfer while paused"
+      "BEP20Pausable: token transfer while paused"
     );
 
     expect((await this.tap.balanceOf(other)).toString()).to.equal("1000");
@@ -144,7 +160,7 @@ contract('Tap', function ([ owner, other ]) {
   it('can only be paused by pauser role', async function () {
     await expectRevert(
       this.tap.pause({from: other}),
-      "ERC20PresetMinterPauser: must have pauser role to pause"
+      "BEP20PresetMinterPauser: must have pauser role to pause"
     );
   });
 
@@ -153,7 +169,7 @@ contract('Tap', function ([ owner, other ]) {
 
     await expectRevert(
       this.tap.transfer(other, 1000),
-      "ERC20Pausable: token transfer while paused"
+      "BEP20Pausable: token transfer while paused"
     );
 
     const web3Receipt = await this.tap.unpause();
@@ -170,7 +186,7 @@ contract('Tap', function ([ owner, other ]) {
   it('can only be un-paused by pauser role', async function () {
     await expectRevert(
       this.tap.unpause({from: other}),
-      "ERC20PresetMinterPauser: must have pauser role to unpause"
+      "BEP20PresetMinterPauser: must have pauser role to unpause"
     );
   });
 

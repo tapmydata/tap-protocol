@@ -1,13 +1,13 @@
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./AccessControl.sol";
+import "./BEP20.sol";
 
 /**
  * @title Blockable Token
  * @dev Allows accounts to be blocked by a BLOCKER_ROLE account
 */
-abstract contract ERC20Blockable is AccessControl, ERC20 {
+abstract contract BEP20Blockable is AccessControl, BEP20 {
     bytes32 public constant BLOCKER_ROLE = keccak256("BLOCKER_ROLE");
 
     mapping(address => bool) internal blocklist;
@@ -36,7 +36,7 @@ abstract contract ERC20Blockable is AccessControl, ERC20 {
      * @param _account The address to block
     */
     function blockAccount(address _account) public virtual {
-        require(hasRole(BLOCKER_ROLE, _msgSender()), "ERC20Blockable: must have blocker role to block");
+        require(hasRole(BLOCKER_ROLE, _msgSender()), "BEP20Blockable: must have blocker role to block");
         blocklist[_account] = true;
         emit Blocked(_account);
     }
@@ -46,21 +46,21 @@ abstract contract ERC20Blockable is AccessControl, ERC20 {
      * @param _account The address to remove from the block list
     */
     function unBlockAccount(address _account) public virtual {
-        require(hasRole(BLOCKER_ROLE, _msgSender()), "ERC20Blockable: must have blocker role to unblock");
+        require(hasRole(BLOCKER_ROLE, _msgSender()), "BEP20Blockable: must have blocker role to unblock");
         blocklist[_account] = false;
         emit UnBlocked(_account);
     }
 
     /**
-     * @dev See {ERC20-_beforeTokenTransfer}.
+     * @dev See {BEP20-_beforeTokenTransfer}.
      *
      * Requirements:
      *
      * - minted tokens must not cause the total supply to go over the cap.
      */
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
-        require (!isBlocked(from), "ERC20Blockable: token transfer rejected. Sender is blocked.");
-        require (!isBlocked(to), "ERC20Blockable: token transfer rejected. Receiver is blocked.");
+        require (!isBlocked(from), "BEP20Blockable: token transfer rejected. Sender is blocked.");
+        require (!isBlocked(to), "BEP20Blockable: token transfer rejected. Receiver is blocked.");
         super._beforeTokenTransfer(from, to, amount);
     }
 }
