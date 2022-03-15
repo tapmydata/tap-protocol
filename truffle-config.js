@@ -75,7 +75,20 @@ module.exports = {
       gasPrice: 61000000000,
       network_id: 1,
       from: process.env.FROM
-    }
+    },
+    matic: {
+      provider: () => new HDWalletProvider({
+        mnemonic: process.env.MNEMONIC,
+        providerOrUrl: "https://polygon-rpc.com",
+        chainId: 42
+      }),
+      gasPrice: 55000000000,
+      network_id: 137,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      from: process.env.FROM,
+      skipDryRun: true
+    },
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
